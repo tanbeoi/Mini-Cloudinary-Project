@@ -7,6 +7,7 @@ import multer from "multer";
 import imageRouter from "./routes/image.js";
 import metadataRouter from "./routes/metadata.js";
 import signRouter from "./routes/sign.js";
+import { apiKeyAuth } from './middleware/apiKeyAuth.js'; 
 
 // Load all variables into process.env
 dotenv.config();
@@ -22,16 +23,16 @@ app.use(express.json());
 app.use(helmet());
 
 // Use the upload router for handling file uploads
-app.use("/api", uploadRouter);
+app.use("/upload", apiKeyAuth, uploadRouter);
 
 // Image trasnformation router
 app.use("/image", imageRouter);
 
 // Image metadata router
-app.use("/metadata", metadataRouter);
+app.use("/metadata", apiKeyAuth, metadataRouter);
 
 // Signed URL router
-app.use("/sign", signRouter);
+app.use("/sign", apiKeyAuth, signRouter);
 
 app.get("/", (req, res) => {
   res.send("Test");

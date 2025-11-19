@@ -7,7 +7,7 @@ import { upload } from "../config/multer.js";
 const router = express.Router();
 
 
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post("/", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
 
