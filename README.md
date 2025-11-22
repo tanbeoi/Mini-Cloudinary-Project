@@ -6,21 +6,29 @@ Built with Node.js, Express, Sharp, and AWS S3/R2.
 ---
 
 ## 🚀 Features
-- Image upload
-- Image transformation (resize, format conversion, quality)
-- EXIF metadata extraction
-- Signed URL generation
-- RESTful API design
-- Production-ready structure (routes, services, config)
+- Secure image upload with API key authentication
+- Powerful image transformation (resize, format conversion, quality, auto-orientation)
+- Fast EXIF metadata extraction (camera, GPS, color profile)
+- Instant signed URL generation for private access
+- Robust validation with Zod schemas (type-safe, error details)
+- RESTful API design with clear error handling
+- Production-ready structure (modular routes, services, config)
+- Cloud storage support (AWS S3, Cloudflare R2)
+- Modern developer experience (typed validation, clear errors, easy extension)
 
 ---
 
 ## 🛠 Tech Stack
 - **Node.js**  
 - **Express.js**  
-- **Sharp** (image processing)  
-- **AWS S3 / Cloudflare R2**  
-- **dotenv**, **helmet**, **cors**  
+- **Sharp** (high-performance image processing)  
+- **AWS S3 / Cloudflare R2** (cloud storage)  
+- **Zod** (type-safe validation)  
+- **Multer** (file upload handling)  
+- **Helmet** (security headers)  
+- **dotenv** (environment config)  
+- **CORS** (cross-origin resource sharing)  
+- **Custom API key authentication**
 
 ---
 
@@ -28,16 +36,29 @@ Built with Node.js, Express, Sharp, and AWS S3/R2.
 MINI-CLOUDINARY/
 ├── node_modules/                # Installed dependencies
 ├── src/
-│   ├── config/                  # Environment + S3 config 
-│   ├── routes/                  # Route handlers (upload, image, metadata)
-│   ├── services/                # Core logic (S3, Sharp, etc.)
-│   ├── utils/                   # Helpers (validation, errors)
+│   ├── config/
+│   │   ├── multer.js            # Multer upload config
+│   │   └── s3.js                # S3 client/config
+│   ├── routes/
+│   │   ├── upload.js            # Upload endpoint
+│   │   ├── image.js             # Image transform endpoint
+│   │   ├── metadata.js          # EXIF metadata endpoint
+│   │   └── sign.js              # Signed URL endpoint
+│   ├── services/
+│   │   └── uploadService.js     # S3 upload logic
+│   ├── middleware/
+│   │   ├── apiKeyAuth.js        # API key authentication
+│   │   └── validate.js          # Zod validation middleware
+│   ├── validation/
+│   │   ├── imageSchemas.js      # Zod schemas for image route
+│   │   └── signSchemas.js       # Zod schemas for sign route
+│   ├── utils/                   # Helpers (error handling, formatting)
 │   ├── app.js                   # Express app setup (middleware + routes)
 │   └── server.js                # Entry point (app.listen)
 ├── .env                         # Environment variables 
 ├── package.json                 # Project manifest + scripts
 ├── package-lock.json            # Dependency lockfile
-└── README.md                   
+└── README.md                    # Project documentation
 
 ---
 
