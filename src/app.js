@@ -55,4 +55,22 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+
+  if (err.code === "NoSuchKey") {
+    return res.status(404).json({ error: "File not found in storage." });
+  }
+
+  if (err.message?.includes("Sharp")) {
+    return res.status(400).json({ error: "Image processing failed." });
+  }
+
+  return res.status(500).json({
+    error: "Internal Server Error",
+    message: err.message,
+  });
+});
+
 export default app;
