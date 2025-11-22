@@ -2,100 +2,79 @@ import { Router } from "express";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../config/s3.js";
 import sharp from "sharp";
+import { validate } from "../middleware/validate.js";
+import { imageTransformQuerySchema, imageTransformParamsSchema } from "../validation/imageSchemas.js";
 
 const router = Router();
 
-const ALLOWED_FORMATS = ["jpg", "jpeg", "png", "webp", "avif"];
+router.get(
+  "/:key",
+  validate(imageTransformParamsSchema, "params"),
+  validate(imageTransformQuerySchema, "query"),
+  async (req, res) => {
+    try {
+      console.log("\n=== IMAGE ROUTE HANDLER ===");
+      console.log("req.params:", req.params);
+      console.log("req.validatedParams:", req.validatedParams);
+      console.log("req.validatedQuery:", req.validatedQuery);
 
-router.get("/:key", async (req, res) => {
-  try {
-    const { key } = req.params;
-    const { w, h, fmt, q } = req.query;
+      const { key } = req.validatedParams;
+      const { w: width, h: height, fmt: format, q: quality } = req.validatedQuery;
+      
+      console.log("Destructured - width:", width, typeof width);
+      console.log("Destructured - height:", height, typeof height);
+      console.log("Destructured - format:", format, typeof format);
+      console.log("Destructured - quality:", quality, typeof quality);
 
-    // ---------- VALIDATION ----------
+      // ---------- FETCH ORIGINAL FROM S3 ----------
 
-    // convert to numbers for testing (or keep as null)
-    const width = w !== undefined ? Number(w) : null;
-    const height = h !== undefined ? Number(h) : null;
-    const quality = q !== undefined ? Number(q) : 80;
-
-    const errors = [];
-
-    if (width !== null) {
-      if (!Number.isInteger(width) || width <= 0 || width > 4000) {
-        errors.push("w must be an integer between 1 and 4000");
-      }
-    }
-
-    if (height !== null) {
-      if (!Number.isInteger(height) || height <= 0 || height > 4000) {
-        errors.push("h must be an integer between 1 and 4000");
-      }
-    }
-
-    let format = null;
-    if (fmt !== undefined) {
-      if (!ALLOWED_FORMATS.includes(fmt)) {
-        errors.push(`fmt must be one of: ${ALLOWED_FORMATS.join(", ")}`);
-      } else {
-        // Map format to fmt
-        // Check if fmt is "jpg" 
-        // If so, map to "jpeg" for sharp
-        // Otherwise, keep it the same
-        format = fmt === "jpg" ? "jpeg" : fmt;
-      }
-    }
-
-    if (q !== undefined) {
-      if (!Number.isInteger(quality) || quality < 1 || quality > 100) {
-        errors.push("q must be an integer between 1 and 100");
-      }
-    }
-
-    if (errors.length > 0) {
-      return res.status(400).json({
-        error: "Invalid query parameters",
-        details: errors,
+      console.log("\nFetching from S3...");
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: key,
       });
+
+      const s3Response = await s3.send(command);
+      console.log("S3 fetch successful");
+      const buffer = await s3Response.Body.transformToByteArray();
+      console.log("Buffer created, size:", buffer.length, "bytes");
+
+      // ---------- SHARP PIPELINE ----------
+
+      console.log("\nCreating sharp pipeline...");
+      let image = sharp(buffer);
+
+      if (width || height) {
+        console.log("Resizing - width:", width, "height:", height);
+        image = image.resize({
+          width: width || null,
+          height: height || null,
+          fit: "inside",
+        });
+        console.log("Resize applied");
+      }
+
+      if (format) {
+        console.log("Converting format to:", format, "quality:", quality);
+        image = image.toFormat(format, { quality });
+        console.log("Format conversion applied");
+      }
+
+      const outputBuffer = await image.toBuffer();
+      console.log("Output buffer created, size:", outputBuffer.length, "bytes");
+
+      const responseFormat = format || "jpeg";
+      console.log("Response format:", responseFormat);
+      res.set("Content-Type", `image/${responseFormat}`);
+      res.send(outputBuffer);
+      console.log("Response sent successfully\n");
+    } catch (err) {
+      console.error("\n!!! ERROR in image route !!!");
+      console.error("Error message:", err.message);
+      console.error("Error stack:", err.stack);
+      res
+        .status(404)
+        .json({ error: "Image not found or processing failed" });
     }
-
-    // ---------- FETCH ORIGINAL FROM S3 ----------
-
-    const command = new GetObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: key,
-    });
-
-    const s3Response = await s3.send(command);
-    const buffer = await s3Response.Body.transformToByteArray();
-
-    // ---------- SHARP PIPELINE ----------
-
-    let image = sharp(buffer);
-
-    if (width || height) {
-      image = image.resize({
-        width: width || null,
-        height: height || null,
-        fit: "inside",
-      });
-    }
-
-    if (format) {
-      image = image.toFormat(format, { quality });
-    }
-
-    const outputBuffer = await image.toBuffer();
-
-    const responseFormat = format || "jpeg";
-    res.set("Content-Type", `image/${responseFormat}`);
-    res.send(outputBuffer);
-  } catch (err) {
-    console.error(err);
-    res
-      .status(404)
-      .json({ error: "Image not found or processing failed" });
   }
-});
-
-export default router;
+);export default router;
