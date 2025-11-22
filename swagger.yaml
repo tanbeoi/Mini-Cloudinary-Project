@@ -1,0 +1,174 @@
+openapi: 3.0.3
+info:
+  title: Mini Cloudinary API
+  version: 1.0.0
+  description: >
+    A lightweight image upload and transformation API built with
+    Express, Multer, Sharp, AWS S3, Zod, and API key protection.
+
+servers:
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+paths:
+  /api/upload:
+    post:
+      tags: [Upload]
+      summary: Upload an image to S3
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        '201':
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    example: "images/abc123.jpg"
+        '400':
+          description: Invalid file or validation error
+        '401':
+          description: Missing or invalid API key
+
+  /image/{key}:
+    get:
+      tags: [Image]
+      summary: Get (optionally transformed) image by key
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: S3 object key for the image
+        - name: w
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 4000
+          description: Target width in pixels (1-4000)
+        - name: h
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 4000
+          description: Target height in pixels (1-4000)
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Output quality (1–100)
+        - name: fmt
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [jpeg, png, webp, avif]
+          description: Output format
+      responses:
+        '200':
+          description: The transformed image
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+        '400':
+          description: Invalid query parameters
+
+  /metadata/{key}:
+    get:
+      tags: [Metadata]
+      summary: Get image metadata from S3
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: S3 object key for the image
+      responses:
+        '200':
+          description: Image metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  width: 1920
+                  height: 1080
+                  format: "jpeg"
+                  size: 234567
+        '401':
+          description: Missing or invalid API key
+        '404':
+          description: Image not found
+
+  /sign/{key}:
+    get:
+      tags: [Sign]
+      summary: Get a signed URL for an image
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: S3 object key for the image
+        - name: expires
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 10
+            maximum: 3600
+          description: Signed URL expiry in seconds (default depends on server config)
+      responses:
+        '200':
+          description: Signed URL generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: "https://bucket.s3.amazonaws.com/images/abc123.jpg?X-Amz-Signature=..."
+        '401':
+          description: Missing or invalid API key
+        '404':
+          description: Image not found

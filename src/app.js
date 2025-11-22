@@ -8,6 +8,10 @@ import imageRouter from "./routes/image.js";
 import metadataRouter from "./routes/metadata.js";
 import signRouter from "./routes/sign.js";
 import { apiKeyAuth } from './middleware/apiKeyAuth.js'; 
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Load all variables into process.env
 dotenv.config();
@@ -21,6 +25,16 @@ app.use(cors());
 app.use(express.json());
 
 app.use(helmet());
+
+// Load Swagger.yaml file 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const swaggerDocument = YAML.load(
+  path.resolve(__dirname, "../swagger.yaml")
+);
+
+// Serve Swagger UI at /docs
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Use the upload router for handling file uploads
 app.use("/upload", apiKeyAuth, uploadRouter);
