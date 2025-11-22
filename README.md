@@ -33,32 +33,35 @@ Built with Node.js, Express, Sharp, and AWS S3/R2.
 ---
 
 ## 📁 Project Structure
+
+```text
 MINI-CLOUDINARY/
-├── node_modules/                # Installed dependencies
+├── node_modules/ # Installed dependencies
 ├── src/
 │   ├── config/
-│   │   ├── multer.js            # Multer upload config
-│   │   └── s3.js                # S3 client/config
+│   │   ├── multer.js # Multer upload config
+│   │   └── s3.js # S3 client/config
 │   ├── routes/
-│   │   ├── upload.js            # Upload endpoint
-│   │   ├── image.js             # Image transform endpoint
-│   │   ├── metadata.js          # EXIF metadata endpoint
-│   │   └── sign.js              # Signed URL endpoint
+│   │   ├── upload.js # Upload endpoint
+│   │   ├── image.js # Image transform endpoint
+│   │   ├── metadata.js # EXIF metadata endpoint
+│   │   └── sign.js # Signed URL endpoint
 │   ├── services/
-│   │   └── uploadService.js     # S3 upload logic
+│   │   └── uploadService.js # S3 upload logic
 │   ├── middleware/
-│   │   ├── apiKeyAuth.js        # API key authentication
-│   │   └── validate.js          # Zod validation middleware
+│   │   ├── apiKeyAuth.js # API key authentication
+│   │   └── validate.js # Zod validation middleware
 │   ├── validation/
-│   │   ├── imageSchemas.js      # Zod schemas for image route
-│   │   └── signSchemas.js       # Zod schemas for sign route
-│   ├── utils/                   # Helpers (error handling, formatting)
-│   ├── app.js                   # Express app setup (middleware + routes)
-│   └── server.js                # Entry point (app.listen)
-├── .env                         # Environment variables 
-├── package.json                 # Project manifest + scripts
-├── package-lock.json            # Dependency lockfile
-└── README.md                    # Project documentation
+│   │   ├── imageSchemas.js # Zod schemas for image route
+│   │   └── signSchemas.js # Zod schemas for sign route
+│   ├── utils/ # Helpers (error handling, formatting)
+│   ├── app.js # Express app setup (middleware + routes)
+│   └── server.js # Entry point (app.listen)
+├── .env # Environment variables
+├── package.json # Project manifest + scripts
+├── package-lock.json # Dependency lockfile
+└── README.md # Project documentation
+```
 
 ---
 
