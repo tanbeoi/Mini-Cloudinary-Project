@@ -92,15 +92,22 @@ Before running this project, make sure you have:
 
 ### Environment Variables
 
-Create a `.env` file in the project root with the following configuration:
+Create a `.env` file in the project root by copying the provided example and filling in your credentials:
+
+```bash
+cp .env.example .env
+# then open `.env` and replace the empty values
+```
+
+The `.env.example` contains the expected variables:
 
 ```bash
 PORT=3000
-S3_ACCESS_KEY=your_access_key_here
-S3_SECRET_KEY=your_secret_key_here
-S3_BUCKET=your_bucket_name
-S3_REGION=your_region_or_endpoint
-API_KEY_SECRET=your_api_key_secret
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_S3_BUCKET=
+AWS_REGION=
+API_KEY_SECRET=
 ```
 
 ---
@@ -120,15 +127,11 @@ npm install
 
 ### 3. Configure environment variables
 
-If you haven't already, create a `.env` file in the project root with your S3/R2 credentials:
+If you haven't already, copy the example and create a `.env` file in the project root:
 
 ```bash
-PORT=3000
-S3_ACCESS_KEY=your_access_key_here
-S3_SECRET_KEY=your_secret_key_here
-S3_BUCKET=your_bucket_name
-S3_REGION=your_region_or_endpoint
-API_KEY_SECRET=your_api_key_secret
+cp .env.example .env
+# then edit `.env` and fill in the values
 ```
 
 ### 4. Run the development server
