@@ -17,7 +17,7 @@ components:
       name: x-api-key
 
 paths:
-  /api/upload:
+  /upload:
     post:
       tags: [Upload]
       summary: Upload an image to S3
