@@ -1,0 +1,172 @@
+{
+	"info": {
+		"_postman_id": "2c0fdda9-e685-44a7-9bbe-b7f3137e40ee",
+		"name": "Mini Cloudinary API",
+		"description": "A lightweight image upload + resize + metadata + signed URL API.  \nIncludes protected routes and query-based transformations.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50101160"
+	},
+	"item": [
+		{
+			"name": "Upload Image",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/upload",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Image (Transform)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/image/test.jpg?w=800&h=600&fmt=webp&q=80",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"image",
+						"test.jpg"
+					],
+					"query": [
+						{
+							"key": "w",
+							"value": "800"
+						},
+						{
+							"key": "h",
+							"value": "600"
+						},
+						{
+							"key": "fmt",
+							"value": "webp"
+						},
+						{
+							"key": "q",
+							"value": "80"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Image (Metadata)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}/metadata/test.jpg",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"metadata",
+						"test.jpg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Signed URL",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}/sign/test.jpg?expires=300",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sign",
+						"test.jpg"
+					],
+					"query": [
+						{
+							"key": "expires",
+							"value": "300"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		},
+		{
+			"key": "apiKey",
+			"value": ""
+		}
+	]
+}

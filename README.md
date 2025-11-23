@@ -59,6 +59,8 @@ MINI-CLOUDINARY/
 │   └── server.js # Entry point (app.listen)
 ├── .env # Environment variables
 ├── package.json # Project manifest + scripts
+├── postman/
+│   └── Mini-Cloudinary.postman_collection.json
 ├── package-lock.json # Dependency lockfile
 └── README.md # Project documentation
 ```
@@ -136,3 +138,17 @@ npm run dev
 
 Your API will be available at `http://localhost:3000`
 
+## 🧪 Postman Collection
+
+A Postman collection is included to help you test all API routes easily.
+
+Import the file located at: `postman/Mini-Cloudinary.postman_collection.json`
+
+The collection includes:
+
+- **Upload Image** – `POST /upload`  
+- **Get Image (Transform)** – `GET /image/:key`  
+- **Get Image Metadata** – `GET /metadata/:key`  
+- **Get Signed URL** – `GET /sign/:key`  
+
+Before running protected routes, update the `apiKey` variable in Postman.
