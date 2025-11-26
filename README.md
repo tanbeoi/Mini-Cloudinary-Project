@@ -1,5 +1,7 @@
 # Mini Cloudinary API
 
+[![Live Deployment](https://img.shields.io/website?down_color=red&down_message=down&up_color=brightgreen&up_message=live&url=https%3A%2F%2Fmini-cloudinary-project.onrender.com)](https://mini-cloudinary-project.onrender.com)
+
 A lightweight media upload and transformation API inspired by Cloudinary.  
 Built with Node.js, Express, Sharp, and AWS S3/R2.
 
@@ -139,13 +141,22 @@ cp .env.example .env
 npm run dev
 ```
 
-Your API will be available at `http://localhost:3000`
+Your local API will be available at `http://localhost:3000`. A public deployment is available at `https://mini-cloudinary-project.onrender.com`.
+
+## 🚀 Live Deployment
+
+**Base URL:**  
+https://mini-cloudinary-project.onrender.com
+
+This is the publicly deployed version of the Mini Cloudinary Image Service running on Render. The instance may experience 20–40s cold starts due to the free tier.
 
 ## 🧪 Postman Collection
 
 A Postman collection is included to help you test all API routes easily.
 
 Import the file located at: `postman/Mini-Cloudinary.postman_collection.json`
+
+Set the Postman `baseUrl` variable to `https://mini-cloudinary-project.onrender.com` to target the live deployment, or use `http://localhost:3000` for local testing.
 
 The collection includes:
 
