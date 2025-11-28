@@ -17,7 +17,7 @@ router.post("/", upload.single("file"), async (req, res) => {
 
     const url = await uploadToS3(file.buffer, fileName, file.mimetype);
 
-    res.json({ url });
+    res.json({ key: fileName, url });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

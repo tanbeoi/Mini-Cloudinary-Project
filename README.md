@@ -166,3 +166,33 @@ The collection includes:
 - **Get Signed URL** – `GET /sign/:key`  
 
 Before running protected routes, update the `apiKey` variable in Postman.
+
+## **Admin Console**
+
+- **File:** `admin/admin.html`  
+- **Purpose:** Quick local admin UI to upload images, preview transformed images via the `/image` route, view EXIF metadata, and generate signed URLs. It's intended for local testing only and stores session data in memory (page session).
+
+How to use locally:
+
+- Start your API locally (example):
+```bash
+cp .env.example .env
+npm install
+npm run dev   # run your Express server (listens on PORT in .env, default 3000)
+```
+ - Serve the static admin page and open it in your browser (recommended):
+   ```bash
+   # Serve the admin folder with the 'serve' package and open:
+   npx serve admin -l 8000
+   # then open in browser: http://localhost:8000/admin.html
+   ```
+
+Initial setup in the UI:
+
+- The `Base URL` input defaults to `http://localhost:3000` for local testing — leave this if your API is running locally.  
+- Enter your admin `API Key` (the same secret used by `apiKeyAuth`) into the `API Key` field — required for protected endpoints (`/upload`, `/metadata`, `/sign`).
+- Use the Upload section to POST images to `/upload`, then preview them via the Preview section using the returned image key.
+
+Security note:
+
+- This admin page is for local development and debugging only. **Do not deploy `admin/admin.html` publicly** or commit production API keys into the file. Treat the API key as a secret.

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini Cloudinary Admin Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: #020617;
+      color: #f9fafb;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 940px;
+      background: #020617;
+      border-radius: 1.25rem;
+      padding: 1.75rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid #1e293b;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin: 0 0 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 0.75rem;
+    }
+
+    p.subtitle {
+      margin: 0 0 1.5rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+      color: #e5e7eb;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.5rem 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #f9fafb;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      margin-top: 0.25rem;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .col {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px dashed #1f2937;
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #3b82f6;
+      color: #f9fafb;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+
+    .secondary {
+      background: #111827;
+    }
+
+    .secondary:hover {
+      background: #1f2937;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+
+    .status.ok {
+      color: #22c55e;
+    }
+
+    .status.error {
+      color: #f97316;
+    }
+
+    pre {
+      background: #020617;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid #111827;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .preview-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .preview-box {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 0.75rem;
+      border: 1px solid #111827;
+      background: #020617;
+    }
+
+    .url-text {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      word-break: break-all;
+      margin-top: 0.25rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: #0f172a;
+      color: #9ca3af;
+      border: 1px solid #1e293b;
+      margin-left: 0.25rem;
+    }
+
+    /* Session board styles */
+    #uploadsBoard {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .upload-card {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid #111827;
+      background: #020617;
+      align-items: flex-start;
+    }
+
+    .upload-card img {
+      width: 96px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      border: 1px solid #1f2937;
+    }
+
+    .upload-card-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .upload-card-key {
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      word-break: break-all;
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-card-meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mini Cloudinary Admin Console</h1>
+    <p class="subtitle">
+      Local admin page to upload images, preview them through your API, view metadata, and generate signed URLs.
+      <strong>Do not deploy this publicly with a real API key.</strong>
+    </p>
+
+    <!-- CONFIG -->
+    <div class="section">
+      <div class="row">
+        <div class="col">
+          <label for="baseUrl">
+            Base URL <span class="badge">Render</span>
+          </label>
+          <input
+            id="baseUrl"
+            type="text"
+            value="http://localhost:3000"
+          />
+        </div>
+        <div class="col">
+          <label for="apiKey">
+            API Key (x-api-key) <span class="badge">admin only</span>
+          </label>
+          <input
+            id="apiKey"
+            type="password"
+            placeholder="your-api-key-here"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="section">
+      <h2>1. Upload image</h2>
+      <div class="row">
+        <div class="col">
+          <label for="fileInput">Choose image</label>
+          <input id="fileInput" type="file" accept="image/*" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button id="uploadBtn">⬆ Upload via /upload</button>
+          <span id="uploadStatus" class="status"></span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Upload response (raw JSON)</label>
+          <pre id="rawResponse">{}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="section">
+      <h2>2. Preview via /image/:key</h2>
+
+      <div class="row">
+        <div class="col">
+          <label for="imageKey">
+            Image key <span class="badge">from upload</span>
+          </label>
+          <input
+            id="imageKey"
+            type="text"
+            placeholder="e.g. 17326630123-myphoto.jpg"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="width">Width (w)</label>
+          <input id="width" type="number" min="1" placeholder="e.g. 600" />
+        </div>
+        <div class="col">
+          <label for="height">Height (h)</label>
+          <input id="height" type="number" min="1" placeholder="optional" />
+        </div>
+        <div class="col">
+          <label for="format">Format</label>
+          <select id="format">
+            <option value="">(original)</option>
+            <option value="webp">webp</option>
+            <option value="jpeg">jpeg</option>
+            <option value="png">png</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:0.75rem;">
+        <div class="col">
+          <button id="previewBtn" class="secondary">👁 Preview image</button>
+          <span id="previewStatus" class="status"></span>
+        </div>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="preview-box">
+          <label>Local file preview</label>
+          <img id="localPreview" class="preview" alt="Local preview" />
+        </div>
+        <div class="preview-box">
+          <label>CDN preview via /image</label>
+          <img id="remotePreview" class="preview" alt="Remote preview" />
+          <div id="remoteUrl" class="url-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION BOARD -->
+    <div class="section">
+      <h2>3. Recent uploads (this session)</h2>
+      <p class="subtitle" style="margin-bottom:0.75rem;">
+        These entries only exist while this page is open. Data comes from successful <code>/upload</code> responses.
+      </p>
+      <div id="uploadsBoard"></div>
+    </div>
+  </div>
+
+  <script>
+    const baseUrlInput = document.getElementById("baseUrl");
+    const apiKeyInput = document.getElementById("apiKey");
+    const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const uploadStatus = document.getElementById("uploadStatus");
+    const rawResponse = document.getElementById("rawResponse");
+
+    const imageKeyInput = document.getElementById("imageKey");
+    const widthInput = document.getElementById("width");
+    const heightInput = document.getElementById("height");
+    const formatSelect = document.getElementById("format");
+    const previewBtn = document.getElementById("previewBtn");
+    const previewStatus = document.getElementById("previewStatus");
+
+    const localPreview = document.getElementById("localPreview");
+    const remotePreview = document.getElementById("remotePreview");
+    const remoteUrlEl = document.getElementById("remoteUrl");
+
+    const uploadsBoard = document.getElementById("uploadsBoard");
+
+    // Local preview when a file is selected
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        localPreview.src = "";
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      localPreview.src = url;
+    });
+
+    function resolveKeyFromUploadResponse(data) {
+      // Prefer explicit key
+      if (data.key) return data.key;
+
+      // Fall back: derive from data.url if that's all we have
+      if (data.url) {
+        try {
+          const url = new URL(data.url);
+          return url.pathname.slice(1); // strip leading "/"
+        } catch {
+          return data.url.split("/").pop();
+        }
+      }
+
+      return "";
+    }
+
+    function addUploadCard(key, baseUrl, apiKey) {
+      if (!key) return;
+
+      const card = document.createElement("div");
+      card.className = "upload-card";
+
+      const img = document.createElement("img");
+      img.src = `${baseUrl}/image/${encodeURIComponent(key)}?w=200`;
+      img.alt = key;
+
+      const main = document.createElement("div");
+      main.className = "upload-card-main";
+
+      const keyEl = document.createElement("div");
+      keyEl.className = "upload-card-key";
+      keyEl.textContent = `Key: ${key}`;
+
+      const actions = document.createElement("div");
+      actions.className = "upload-card-actions";
+
+      const metaInfo = document.createElement("div");
+      metaInfo.className = "upload-card-meta";
+      metaInfo.textContent = "No metadata loaded yet.";
+
+      // Metadata button
+      const metaBtn = document.createElement("button");
+      metaBtn.className = "secondary";
+      metaBtn.textContent = "📄 Metadata";
+      metaBtn.onclick = async () => {
+        const currentApiKey = apiKeyInput.value.trim() || apiKey;
+        if (!currentApiKey) {
+          metaInfo.textContent = "API key required for /metadata.";
+          return;
+        }
+        metaBtn.disabled = true;
+        metaInfo.textContent = "Loading metadata...";
+        try {
+          const res = await fetch(
+            `${baseUrl}/metadata/${encodeURIComponent(key)}`,
+            {
+              headers: {
+                "x-api-key": currentApiKey,
+              },
+            }
+          );
+          const text = await res.text();
+          metaInfo.textContent = text;
+        } catch (err) {
+          console.error(err);
+          metaInfo.textContent = "Error loading metadata (see console).";
+        } finally {
+          metaBtn.disabled = false;
+        }
+      };
+
+      // Signed URL button
+      const signBtn = document.createElement("button");
+      signBtn.className = "secondary";
+      signBtn.textContent = "🔗 Signed URL";
+      signBtn.onclick = async () => {
+        const currentApiKey = apiKeyInput.value.trim() || apiKey;
+        if (!currentApiKey) {
+          metaInfo.textContent = "API key required for /sign.";
+          return;
+        }
+        signBtn.disabled = true;
+        metaInfo.textContent = "Requesting signed URL (1h)...";
+        try {
+          const res = await fetch(
+            `${baseUrl}/sign/${encodeURIComponent(key)}?expires=3600`,
+            {
+              headers: {
+                "x-api-key": currentApiKey,
+              },
+            }
+          );
+          const data = await res.json();
+          if (data.url) {
+            metaInfo.textContent = `Signed URL (1h):\n${data.url}`;
+          } else {
+            metaInfo.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (err) {
+          console.error(err);
+          metaInfo.textContent = "Error getting signed URL (see console).";
+        } finally {
+          signBtn.disabled = false;
+        }
+      };
+
+      // Copy key button
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "secondary";
+      copyBtn.textContent = "📋 Copy key";
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(key).catch(console.error);
+      };
+
+      actions.appendChild(metaBtn);
+      actions.appendChild(signBtn);
+      actions.appendChild(copyBtn);
+
+      main.appendChild(keyEl);
+      main.appendChild(actions);
+      main.appendChild(metaInfo);
+
+      card.appendChild(img);
+      card.appendChild(main);
+
+      uploadsBoard.prepend(card); // newest first
+    }
+
+    uploadBtn.addEventListener("click", async () => {
+      const baseUrl = baseUrlInput.value.trim().replace(/\/+$/, "");
+      const apiKey = apiKeyInput.value.trim();
+      const file = fileInput.files[0];
+
+      uploadStatus.textContent = "";
+      uploadStatus.className = "status";
+      rawResponse.textContent = "{}";
+
+      if (!baseUrl) {
+        uploadStatus.textContent = "Base URL is required.";
+        uploadStatus.classList.add("error");
+        return;
+      }
+
+      if (!apiKey) {
+        uploadStatus.textContent = "API key is required for /upload.";
+        uploadStatus.classList.add("error");
+        return;
+      }
+
+      if (!file) {
+        uploadStatus.textContent = "Please choose a file first.";
+        uploadStatus.classList.add("error");
+        return;
+      }
+
+      try {
+        uploadBtn.disabled = true;
+        uploadStatus.textContent = "Uploading...";
+
+        const formData = new FormData();
+        formData.append("file", file); // field name must match Multer
+
+        const res = await fetch(baseUrl + "/upload", {
+          method: "POST",
+          headers: {
+            "x-api-key": apiKey,
+            // don't set Content-Type with FormData
+          },
+          body: formData,
+        });
+
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = { raw: text };
+        }
+
+        rawResponse.textContent = JSON.stringify(data, null, 2);
+
+        if (!res.ok) {
+          uploadStatus.textContent = `Upload failed (${res.status})`;
+          uploadStatus.classList.add("error");
+          return;
+        }
+
+        uploadStatus.textContent = "Upload successful.";
+        uploadStatus.classList.add("ok");
+
+        const key = resolveKeyFromUploadResponse(data);
+        if (key) {
+          imageKeyInput.value = key;
+          addUploadCard(key, baseUrl, apiKey);
+        }
+      } catch (err) {
+        console.error(err);
+        uploadStatus.textContent = "Upload error (see console).";
+        uploadStatus.classList.add("error");
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+
+    previewBtn.addEventListener("click", () => {
+      const baseUrl = baseUrlInput.value.trim().replace(/\/+$/, "");
+      const key = imageKeyInput.value.trim();
+      const w = widthInput.value.trim();
+      const h = heightInput.value.trim();
+      const fmt = formatSelect.value;
+
+      previewStatus.textContent = "";
+      previewStatus.className = "status";
+      remotePreview.src = "";
+      remoteUrlEl.textContent = "";
+
+      if (!baseUrl) {
+        previewStatus.textContent = "Base URL is required.";
+        previewStatus.classList.add("error");
+        return;
+      }
+
+      if (!key) {
+        previewStatus.textContent = "Image key is required.";
+        previewStatus.classList.add("error");
+        return;
+      }
+
+      const params = new URLSearchParams();
+      if (w) params.set("w", w);
+      if (h) params.set("h", h);
+      if (fmt) params.set("format", fmt);
+
+      const url =
+        baseUrl +
+        "/image/" +
+        encodeURIComponent(key) +
+        (params.toString() ? "?" + params.toString() : "");
+
+      remotePreview.src = url;
+      remoteUrlEl.textContent = url;
+      previewStatus.textContent = "Requested image from /image.";
+      previewStatus.classList.add("ok");
+    });
+  </script>
+</body>
+</html>
