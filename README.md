@@ -1,6 +1,6 @@
 # Mini Cloudinary API
 
-[![Live Deployment](https://img.shields.io/website?down_color=red&down_message=down&up_color=brightgreen&up_message=live&url=https%3A%2F%2Fmini-cloudinary-project.onrender.com)](https://mini-cloudinary-project.onrender.com)
+[![Live Deployment](https://img.shields.io/website?down_color=red&down_message=down&up_color=brightgreen&up_message=live&url=https%3A%2F%2Fmini-cloudinary-project.onrender.com)](https://mini-cloudinary-project.onrender.com/docs)
 
 A lightweight media upload and transformation API inspired by Cloudinary.  
 Built with Node.js, Express, Sharp, and AWS S3/R2.
