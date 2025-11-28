@@ -168,6 +168,8 @@ The collection includes:
 Before running protected routes, update the `apiKey` variable in Postman.
 
 ## **Admin Console**
+<img width="820" height="800" alt="image" src="https://github.com/user-attachments/assets/26ce8be1-8a33-4f14-8b29-bb23bc40bca3" />
+<img width="769" height="822" alt="image" src="https://github.com/user-attachments/assets/bcfdfc0d-3926-4a75-928d-073bdc1fa1cc" />
 
 - **File:** `admin/admin.html`  
 - **Purpose:** Quick local admin UI to upload images, preview transformed images via the `/image` route, view EXIF metadata, and generate signed URLs. It's intended for local testing only and stores session data in memory (page session).
