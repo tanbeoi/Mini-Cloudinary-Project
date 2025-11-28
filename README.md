@@ -7,30 +7,54 @@ Built with Node.js, Express, Sharp, and AWS S3/R2.
 
 ---
 
+## 🚀 Live Deployment
+
+**Base URL:**  
+https://mini-cloudinary-project.onrender.com/docs 
+
+This is the publicly deployed version of the Mini Cloudinary Image Service running on Render. The instance may experience 20–40s cold starts due to the free tier.
+
+---
+
+### Demo video
+
+Watch a short demo of the admin console in action (unlisted):
+
+[Watch demo (YouTube — unlisted)](https://youtu.be/1PZnwWnfjp8)
+
+<p><a href="https://youtu.be/1PZnwWnfjp8"><img src="https://img.youtube.com/vi/1PZnwWnfjp8/maxresdefault.jpg" alt="Admin console demo" width="900" /></a></p>
+
+The video demonstrates uploading, previewing, viewing metadata, and generating signed URLs using the local admin page.
+
+---
+
 ## 🚀 Features
 - Secure image upload with API key authentication
-- Powerful image transformation (resize, format conversion, quality, auto-orientation)
-- Fast EXIF metadata extraction (camera, GPS, color profile)
-- Instant signed URL generation for private access
-- Robust validation with Zod schemas (type-safe, error details)
-- RESTful API design with clear error handling
-- Production-ready structure (modular routes, services, config)
-- Cloud storage support (AWS S3, Cloudflare R2)
-- Modern developer experience (typed validation, clear errors, easy extension)
+- Image transformation: resize, format conversion, quality control, and auto-orientation (via Sharp)
+- EXIF metadata extraction 
+- Signed URL generation for time-limited private access
+- Robust request validation with Zod and consistent error responses
+- Simple, modular REST API structure (routes, middleware, services)
+- Local admin console for quick testing: `admin/admin.html` (upload, preview, metadata, signed URLs)
+- API documentation (Swagger/OpenAPI) + Postman collection for easy testing
+- Cloud-ready storage support (AWS S3 and Cloudflare R2 compatible)
+- Security and tooling: CORS, Helmet, and dotenv for safe config
 
 ---
 
 ## 🛠 Tech Stack
-- **Node.js**  
-- **Express.js**  
-- **Sharp** (high-performance image processing)  
-- **AWS S3 / Cloudflare R2** (cloud storage)  
-- **Zod** (type-safe validation)  
-- **Multer** (file upload handling)  
-- **Helmet** (security headers)  
-- **dotenv** (environment config)  
-- **CORS** (cross-origin resource sharing)  
-- **Custom API key authentication**
+- **Node.js (ES modules)**
+- **Express.js**
+- **Sharp** — image transforms and optimizations
+- **AWS S3 / Cloudflare R2** — cloud object storage
+- **Zod** — schema validation and type-safety
+- **Multer** — multipart/form-data upload handling
+- **Helmet** — security headers
+- **dotenv** — environment configuration
+- **CORS** — cross-origin resource control
+- **Swagger (OpenAPI) + swagger-ui-express** — interactive API docs from `swagger.yaml`
+- **Postman** — included collection for testing (`postman/Mini-Cloudinary.postman_collection.json`)
+- **npx serve** (recommended for serving `admin/` locally) and **Render** for public deployment
 
 ---
 
@@ -66,6 +90,59 @@ MINI-CLOUDINARY/
 ├── package-lock.json # Dependency lockfile
 └── README.md # Project documentation
 ```
+
+---
+
+## **Admin Console**
+<img width="820" height="800" alt="image" src="https://github.com/user-attachments/assets/26ce8be1-8a33-4f14-8b29-bb23bc40bca3" />
+<img width="769" height="822" alt="image" src="https://github.com/user-attachments/assets/bcfdfc0d-3926-4a75-928d-073bdc1fa1cc" />
+
+- **File:** `admin/admin.html`  
+- **Purpose:** Quick local admin UI to upload images, preview transformed images via the `/image` route, view EXIF metadata, and generate signed URLs. It's intended for local testing only and stores session data in memory (page session).
+
+How to use locally:
+
+- Start your API locally (example):
+```bash
+cp .env.example .env
+npm install
+npm run dev   # run your Express server (listens on PORT in .env, default 3000)
+```
+ - Serve the static admin page and open it in your browser (recommended):
+   ```bash
+   # Serve the admin folder with the 'serve' package and open:
+   npx serve admin -l 8000
+   # then open in browser: http://localhost:8000/admin.html
+   ```
+
+Initial setup in the UI:
+
+- The `Base URL` input defaults to `http://localhost:3000` for local testing — leave this if your API is running locally.  
+- Enter your admin `API Key` (the same secret used by `apiKeyAuth`) into the `API Key` field — required for protected endpoints (`/upload`, `/metadata`, `/sign`).
+- Use the Upload section to POST images to `/upload`, then preview them via the Preview section using the returned image key.
+
+Security note:
+
+- This admin page is for local development and debugging only. **Do not deploy `admin/admin.html` publicly** or commit production API keys into the file. Treat the API key as a secret.
+
+---
+
+## 🧪 Postman Collection
+
+A Postman collection is included to help you test all API routes easily.
+
+Import the file located at: `postman/Mini-Cloudinary.postman_collection.json`
+
+Set the Postman `baseUrl` variable to `https://mini-cloudinary-project.onrender.com` to target the live deployment, or use `http://localhost:3000` for local testing.
+
+The collection includes:
+
+- **Upload Image** – `POST /upload`  
+- **Get Image (Transform)** – `GET /image/:key`  
+- **Get Image Metadata** – `GET /metadata/:key`  
+- **Get Signed URL** – `GET /sign/:key`  
+
+Before running protected routes, update the `apiKey` variable in Postman.
 
 ---
 
@@ -141,60 +218,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Your local API will be available at `http://localhost:3000`. A public deployment is available at `https://mini-cloudinary-project.onrender.com`.
+Your local API will be available at `http://localhost:3000`. A public deployment is available at `https://mini-cloudinary-project.onrender.com/docs`.
 
-## 🚀 Live Deployment
 
-**Base URL:**  
-https://mini-cloudinary-project.onrender.com
 
-This is the publicly deployed version of the Mini Cloudinary Image Service running on Render. The instance may experience 20–40s cold starts due to the free tier.
-
-## 🧪 Postman Collection
-
-A Postman collection is included to help you test all API routes easily.
-
-Import the file located at: `postman/Mini-Cloudinary.postman_collection.json`
-
-Set the Postman `baseUrl` variable to `https://mini-cloudinary-project.onrender.com` to target the live deployment, or use `http://localhost:3000` for local testing.
-
-The collection includes:
-
-- **Upload Image** – `POST /upload`  
-- **Get Image (Transform)** – `GET /image/:key`  
-- **Get Image Metadata** – `GET /metadata/:key`  
-- **Get Signed URL** – `GET /sign/:key`  
-
-Before running protected routes, update the `apiKey` variable in Postman.
-
-## **Admin Console**
-<img width="820" height="800" alt="image" src="https://github.com/user-attachments/assets/26ce8be1-8a33-4f14-8b29-bb23bc40bca3" />
-<img width="769" height="822" alt="image" src="https://github.com/user-attachments/assets/bcfdfc0d-3926-4a75-928d-073bdc1fa1cc" />
-
-- **File:** `admin/admin.html`  
-- **Purpose:** Quick local admin UI to upload images, preview transformed images via the `/image` route, view EXIF metadata, and generate signed URLs. It's intended for local testing only and stores session data in memory (page session).
-
-How to use locally:
-
-- Start your API locally (example):
-```bash
-cp .env.example .env
-npm install
-npm run dev   # run your Express server (listens on PORT in .env, default 3000)
-```
- - Serve the static admin page and open it in your browser (recommended):
-   ```bash
-   # Serve the admin folder with the 'serve' package and open:
-   npx serve admin -l 8000
-   # then open in browser: http://localhost:8000/admin.html
-   ```
-
-Initial setup in the UI:
-
-- The `Base URL` input defaults to `http://localhost:3000` for local testing — leave this if your API is running locally.  
-- Enter your admin `API Key` (the same secret used by `apiKeyAuth`) into the `API Key` field — required for protected endpoints (`/upload`, `/metadata`, `/sign`).
-- Use the Upload section to POST images to `/upload`, then preview them via the Preview section using the returned image key.
-
-Security note:
-
-- This admin page is for local development and debugging only. **Do not deploy `admin/admin.html` publicly** or commit production API keys into the file. Treat the API key as a secret.

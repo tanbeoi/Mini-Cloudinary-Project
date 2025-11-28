@@ -49,7 +49,7 @@ app.use("/metadata", apiKeyAuth, metadataRouter);
 app.use("/sign", apiKeyAuth, signRouter);
 
 app.get("/", (req, res) => {
-  res.send("Test");
+  res.send("Welcome to my Project!");
 });
 
 app.get("/health", (req, res) => {
