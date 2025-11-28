@@ -83,11 +83,17 @@ MINI-CLOUDINARY/
 │   ├── utils/ # Helpers (error handling, formatting)
 │   ├── app.js # Express app setup (middleware + routes)
 │   └── server.js # Entry point (app.listen)
-├── .env # Environment variables
+├── .env # Environment variables (local)
+├── .env.example # Example env (copy to .env)
 ├── package.json # Project manifest + scripts
 ├── postman/
 │   └── Mini-Cloudinary.postman_collection.json
+├── admin/
+│   └── admin.html # Local admin console for testing
+├── swagger.yaml # OpenAPI spec for Swagger UI
 ├── package-lock.json # Dependency lockfile
+├── .gitignore
+├── LICENSE
 └── README.md # Project documentation
 ```
 
