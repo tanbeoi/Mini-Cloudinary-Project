@@ -9,5 +9,5 @@ export function apiKeyAuth(req, res, next) {
     return res.status(403).json({ error: "Invalid API key" });
   }
 
-  next(); // API key is valid → continue to route handler
+  next(); // API key is valid - continue to route handler
 }

@@ -18,13 +18,11 @@ router.get("/:key", async (req, res) => {
 
     const s3Response = await s3.send(command);
 
-    // ContentLength and ContentType often available from S3 headers
+    // ContentLength and ContentType available from S3 headers
     const sizeBytes =
-    // Use ContentLength if available, otherwise read Body to determine size
       s3Response.ContentLength ??
       (await s3Response.Body.transformToByteArray()).length;
 
-    // If we already read the Body above, reuse it, otherwise read now
     const bodyBuffer =
       s3Response.Body instanceof Uint8Array
         ? s3Response.Body
@@ -45,7 +43,7 @@ router.get("/:key", async (req, res) => {
       bucket: process.env.AWS_S3_BUCKET,
       width: meta.width ?? null,
       height: meta.height ?? null,
-      format: meta.format ?? null,          // "jpeg", "png", "webp", etc
+      format: meta.format ?? null,          // "jpeg", "png", "webp"
       sizeBytes, // File size in bytes
       mimeType:
         s3Response.ContentType ||
