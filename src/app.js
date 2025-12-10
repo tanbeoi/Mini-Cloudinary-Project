@@ -24,7 +24,11 @@ app.use(cors());
 // Parse Json into Javascript objects to process 
 app.use(express.json());
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 // Load Swagger.yaml file 
 const __filename = fileURLToPath(import.meta.url);
