@@ -7,6 +7,7 @@ import multer from "multer";
 import imageRouter from "./routes/image.js";
 import metadataRouter from "./routes/metadata.js";
 import signRouter from "./routes/sign.js";
+import listRouter from "./routes/list.js";
 import { apiKeyAuth } from './middleware/apiKeyAuth.js'; 
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
@@ -45,6 +46,9 @@ app.use("/upload", apiKeyAuth, uploadRouter);
 
 // Image trasnformation router
 app.use("/image", imageRouter);
+
+// List objects router
+app.use("/list", listRouter);
 
 // Image metadata router
 app.use("/metadata", apiKeyAuth, metadataRouter);
